@@ -23,9 +23,11 @@ public class kartatest {
 
     @BeforeEach
     void setUp() {
-        ChromeOptions option = new ChromeOptions();
-        option.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(option);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--headless");
+        driver = new ChromeDriver(options);
     }
 
     @AfterEach
@@ -37,14 +39,12 @@ public class kartatest {
     @Test
     void shouldTest() {
         driver.get("http://localhost:9999/");
-        List<WebElement>inputs=driver.findElements(By.tagName("input"));
-        inputs.get(0).sendKeys("Василий Петров");
-        inputs.get(1).sendKeys("+71111111111");
-        driver.findElement(By.className("checkbox__box")).click();
-        driver.findElement(By.className("button")).click();
+        driver.findElement(By.cssSelector("[data-test-id=name]input")).sendKeys("Василий Петров");
+        driver.findElement(By.cssSelector("[data-test-id=phone]input")).sendKeys("+71111111111");
+        driver.findElement(By.cssSelector("[data-test-id=agreement]input")).click();
+        driver.findElement(By.cssSelector("button.button")).click();
         String expected ="Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
         String actual = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText().trim();
         assertEquals(expected,actual);
     }
-
     }
